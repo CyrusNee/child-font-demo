@@ -1,0 +1,378 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Comic Sans MS', 'Microsoft YaHei', '微软雅黑', sans-serif;
+    background: linear-gradient(135deg, #FFD93D 0%, #FF6B9D 50%, #C084FC 100%);
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* 可爱的背景装饰 */
+body::before {
+    content: '⭐';
+    position: fixed;
+    font-size: 3em;
+    top: 10%;
+    left: 5%;
+    animation: twinkle 2s infinite;
+    opacity: 0.6;
+}
+
+body::after {
+    content: '🌈';
+    position: fixed;
+    font-size: 4em;
+    bottom: 10%;
+    right: 5%;
+    animation: float 3s ease-in-out infinite;
+    opacity: 0.7;
+}
+
+@keyframes twinkle {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 1; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    position: relative;
+}
+
+header {
+    background: linear-gradient(135deg, #FF6B9D 0%, #FEC163 100%);
+    color: white;
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+header::before {
+    content: '🎨';
+    position: absolute;
+    font-size: 5em;
+    top: -20px;
+    left: 20px;
+    opacity: 0.3;
+    animation: rotate 10s linear infinite;
+}
+
+header::after {
+    content: '✨';
+    position: absolute;
+    font-size: 4em;
+    bottom: -10px;
+    right: 30px;
+    opacity: 0.3;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+header h1 {
+    font-size: 2.8em;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+}
+
+.subtitle {
+    font-size: 1.3em;
+    opacity: 0.95;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+main {
+    padding: 30px;
+}
+
+section {
+    margin-bottom: 30px;
+    padding: 30px;
+    background: linear-gradient(135deg, #FFF9E6 0%, #FFE5F1 100%);
+    border-radius: 20px;
+    border: 4px solid #FFD93D;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+section::before {
+    content: '🌟';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 2em;
+    animation: twinkle 2s infinite;
+}
+
+h2 {
+    color: #FF6B9D;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: #FF6B9D;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+select,
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 15px 20px;
+    border: 3px solid #FFD93D;
+    border-radius: 15px;
+    font-size: 1.1em;
+    transition: all 0.3s;
+    margin-bottom: 10px;
+    font-family: 'Microsoft YaHei', '微软雅黑', sans-serif;
+    background: white;
+}
+
+select:focus,
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #FF6B9D;
+    box-shadow: 0 0 15px rgba(255, 107, 157, 0.3);
+    transform: scale(1.02);
+}
+
+small {
+    display: block;
+    margin-top: 8px;
+    color: #FF6B9D;
+    font-size: 0.95em;
+    font-weight: normal;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 15px 40px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-right: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    font-family: 'Comic Sans MS', 'Microsoft YaHei', '微软雅黑', sans-serif;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #FF6B9D 0%, #FEC163 100%);
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(255, 107, 157, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px) scale(1.02);
+}
+
+.btn-primary:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-secondary {
+    background: white;
+    color: #FF6B9D;
+    border: 3px solid #FF6B9D;
+}
+
+.btn-secondary:hover {
+    background: #FF6B9D;
+    color: white;
+    transform: translateY(-3px) scale(1.05);
+}
+
+.status-section {
+    text-align: center;
+}
+
+.status-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #FFE5F1;
+    border-top: 6px solid #FF6B9D;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#statusText {
+    font-size: 1.3em;
+    color: #FF6B9D;
+    font-weight: bold;
+}
+
+.prompt-preview {
+    background: white;
+    border: 3px solid #FFD93D;
+    border-radius: 15px;
+    padding: 25px;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.prompt-preview pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Microsoft YaHei', '微软雅黑', monospace;
+    font-size: 0.95em;
+    line-height: 1.8;
+    color: #333;
+}
+
+.image-container {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 5px solid #FFD93D;
+}
+
+.image-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+footer {
+    background: linear-gradient(135deg, #FFF9E6 0%, #FFE5F1 100%);
+    padding: 25px;
+    text-align: center;
+    color: #FF6B9D;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+/* 滚动条美化 */
+.prompt-preview::-webkit-scrollbar {
+    width: 10px;
+}
+
+.prompt-preview::-webkit-scrollbar-track {
+    background: #FFE5F1;
+    border-radius: 10px;
+}
+
+.prompt-preview::-webkit-scrollbar-thumb {
+    background: #FF6B9D;
+    border-radius: 10px;
+}
+
+.prompt-preview::-webkit-scrollbar-thumb:hover {
+    background: #FEC163;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 2.2em;
+    }
+
+    .subtitle {
+        font-size: 1.1em;
+    }
+
+    main {
+        padding: 20px;
+    }
+
+    section {
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 1.5em;
+    }
+
+    .image-actions {
+        flex-direction: column;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+}
+
+/* 添加一些可爱的悬浮装饰 */
+.floating-decoration {
+    position: fixed;
+    font-size: 2em;
+    opacity: 0.4;
+    pointer-events: none;
+    animation: float 4s ease-in-out infinite;
+}
+
