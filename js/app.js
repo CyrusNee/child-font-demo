@@ -1,10 +1,11 @@
 /**
  * 主应用逻辑
- * 协调各模块完成完整的生成流程
  */
 
 let currentTaskId = null;
 let pollingInterval = null;
+let currentImageData = null; // 当前会话的图片 data URL（仅内存，不持久化）
+let currentImageUrl = null; // 当前图片的外部 URL
 
 // DOM 元素
 const elements = {
@@ -13,6 +14,8 @@ const elements = {
     title: null,
     apiKey: null,
     generateBtn: null,
+    myWorksBtn: null,
+    clearCacheBtn: null,
     statusSection: null,
     statusText: null,
     spinner: null,
@@ -22,7 +25,11 @@ const elements = {
     imageSection: null,
     resultImage: null,
     downloadBtn: null,
-    newTaskBtn: null
+    newTaskBtn: null,
+    placeholderSection: null,
+    aspectRatio: null,
+    resolution: null,
+    outputFormat: null
 };
 
 /**
@@ -35,6 +42,8 @@ function init() {
     elements.title = document.getElementById('title');
     elements.apiKey = document.getElementById('apiKey');
     elements.generateBtn = document.getElementById('generateBtn');
+    elements.myWorksBtn = document.getElementById('myWorksBtn');
+    elements.clearCacheBtn = document.getElementById('clearCacheBtn');
     elements.statusSection = document.getElementById('statusSection');
     elements.statusText = document.getElementById('statusText');
     elements.spinner = document.getElementById('spinner');
@@ -45,6 +54,10 @@ function init() {
     elements.resultImage = document.getElementById('resultImage');
     elements.downloadBtn = document.getElementById('downloadBtn');
     elements.newTaskBtn = document.getElementById('newTaskBtn');
+    elements.placeholderSection = document.getElementById('placeholderSection');
+    elements.aspectRatio = document.getElementById('aspectRatio');
+    elements.resolution = document.getElementById('resolution');
+    elements.outputFormat = document.getElementById('outputFormat');
 
     // 填充主题下拉列表
     populateThemeSelect();
@@ -59,12 +72,22 @@ function init() {
     elements.themeSelect.addEventListener('change', handleThemeSelect);
     elements.theme.addEventListener('input', handleThemeInput);
     elements.generateBtn.addEventListener('click', handleGenerate);
+    elements.myWorksBtn.addEventListener('click', handleMyWorks);
+    elements.clearCacheBtn.addEventListener('click', handleClearCache);
     elements.apiKey.addEventListener('change', (e) => {
         saveApiKey(e.target.value);
     });
     elements.copyPromptBtn.addEventListener('click', handleCopyPrompt);
     elements.downloadBtn.addEventListener('click', handleDownload);
     elements.newTaskBtn.addEventListener('click', handleNewTask);
+
+    // 页面离开时清理轮询
+    window.addEventListener('beforeunload', () => {
+        if (pollingInterval) {
+            clearInterval(pollingInterval);
+            pollingInterval = null;
+        }
+    });
 }
 
 /**
@@ -74,9 +97,10 @@ function populateThemeSelect() {
     const themes = getAvailableThemes();
 
     themes.forEach(theme => {
+        const vocabulary = vocabularyDatabase[theme];
         const option = document.createElement('option');
         option.value = theme;
-        option.textContent = theme;
+        option.textContent = `${vocabulary.icon} ${theme}`;
         elements.themeSelect.appendChild(option);
     });
 }
@@ -150,11 +174,19 @@ async function handleGenerate() {
         elements.promptPreview.textContent = prompt;
         elements.promptSection.style.display = 'block';
 
+        // 获取生成选项
+        const options = {
+            aspectRatio: elements.aspectRatio.value,
+            resolution: elements.resolution.value,
+            outputFormat: elements.outputFormat.value
+        };
+
         // 调用 API 创建任务
         showStatus('正在创建图片生成任务...');
-        currentTaskId = await createTask(prompt, apiKey);
+        const result = await createTask(prompt, apiKey, options);
 
-        // 开始轮询
+        // 始终使用异步模式（Kie AI 返回 taskId）
+        currentTaskId = result.data;
         showStatus('图片生成中，请稍候...');
         startPolling(apiKey, theme, title, prompt);
 
@@ -162,6 +194,51 @@ async function handleGenerate() {
         showError(`😢 哎呀，出错了：${error.message}`);
         elements.generateBtn.disabled = false;
     }
+}
+
+/**
+ * 显示生成的图片
+ */
+/**
+ * 将图片 URL 转换为 data URL
+ */
+async function convertToDataUrl(imageUrl) {
+    const response = await fetch(imageUrl);
+    if (!response.ok) throw new Error(`图片获取失败: ${response.status}`);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('FileReader 失败'));
+        reader.readAsDataURL(blob);
+    });
+}
+
+async function displayImage(imageUrl, theme, title, prompt) {
+    elements.placeholderSection.style.display = 'none';
+    elements.resultImage.src = imageUrl;
+    elements.imageSection.style.display = 'block';
+    elements.statusSection.style.display = 'none';
+
+    currentImageUrl = imageUrl;
+
+    // 先保存历史记录（不依赖图片转换结果）
+    saveTaskHistory({
+        theme: theme,
+        title: title,
+        prompt: prompt,
+        imageUrl: imageUrl,
+        taskId: currentTaskId
+    });
+
+    // 尝试转为 data URL 用于当前会话下载（可能因 CORS 失败，不影响主流程）
+    try {
+        currentImageData = await convertToDataUrl(imageUrl);
+    } catch (e) {
+        currentImageData = null;
+    }
+
+    elements.generateBtn.disabled = false;
 }
 
 /**
@@ -183,40 +260,26 @@ function startPolling(apiKey, theme, title, prompt) {
         try {
             const taskData = await queryTask(currentTaskId, apiKey);
 
+            // 检查是否成功
             if (taskData.state === 'success') {
-                // 任务成功
-                clearInterval(pollingInterval);
+                const imageUrl = extractImageUrl(taskData);
+                if (imageUrl) {
+                    clearInterval(pollingInterval);
+                    displayImage(imageUrl, theme, title, prompt);
+                    return;
+                }
+            }
 
-                const result = JSON.parse(taskData.resultJson);
-                const imageUrl = result.resultUrls[0];
-
-                // 显示图片
-                elements.resultImage.src = imageUrl;
-                elements.imageSection.style.display = 'block';
-
-                // 隐藏状态
-                elements.statusSection.style.display = 'none';
-
-                // 保存到历史
-                saveTaskHistory({
-                    theme: theme,
-                    title: title,
-                    prompt: prompt,
-                    imageUrl: imageUrl,
-                    taskId: currentTaskId
-                });
-
-                // 启用按钮
-                elements.generateBtn.disabled = false;
-
-            } else if (taskData.state === 'fail') {
-                // 任务失败
+            // 检查是否失败
+            if (taskData.state === 'fail') {
                 clearInterval(pollingInterval);
                 showError(`😢 哎呀，生成失败了：${taskData.failMsg || '未知错误'}`);
                 elements.generateBtn.disabled = false;
+                return;
+            }
 
-            } else if (pollCount >= maxPolls) {
-                // 超时
+            // 超时检查
+            if (pollCount >= maxPolls) {
                 clearInterval(pollingInterval);
                 showError('⏰ 等太久了，请稍后再试试吧');
                 elements.generateBtn.disabled = false;
@@ -271,17 +334,59 @@ function handleCopyPrompt() {
 }
 
 /**
- * 下载图片
+ * 下载图片（强制弹出保存对话框）
  */
-function handleDownload() {
-    const imageUrl = elements.resultImage.src;
+async function handleDownload() {
     const theme = elements.theme.value.trim();
+    const format = elements.outputFormat.value; // 尊重用户选择的格式
+    const ext = format === 'jpg' ? 'jpg' : 'png';
+    const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
 
-    // 创建下载链接
+    if (!currentImageUrl && !currentImageData) {
+        alert('图片数据不存在，请重新生成');
+        return;
+    }
+
+    const fileName = `识字小报_${theme}_${Date.now()}.${ext}`;
+
+    // 获取图片 Blob：优先用 data URL，否则从外部 URL 获取
+    async function getBlob() {
+        if (currentImageData) {
+            const res = await fetch(currentImageData);
+            return res.blob();
+        }
+        // 从外部 URL 获取（可能因 CORS 失败）
+        const res = await fetch(currentImageUrl);
+        return res.blob();
+    }
+
+    // 优先使用 showSaveFilePicker 强制弹出保存对话框
+    if (window.showSaveFilePicker) {
+        try {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: fileName,
+                types: [{
+                    description: ext.toUpperCase() + ' 图片',
+                    accept: { [mimeType]: [`.${ext}`] }
+                }]
+            });
+
+            const blob = await getBlob();
+            const writable = await handle.createWritable();
+            await writable.write(blob);
+            await writable.close();
+            return;
+        } catch (e) {
+            // 用户取消了对话框，直接返回
+            if (e.name === 'AbortError') return;
+            // 其他错误走 fallback
+        }
+    }
+
+    // Fallback：传统下载方式
     const link = document.createElement('a');
-    link.href = imageUrl;
-    link.download = `识字小报_${theme}_${Date.now()}.png`;
-    link.target = '_blank';
+    link.href = currentImageData || currentImageUrl;
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -302,15 +407,93 @@ function handleNewTask() {
     elements.imageSection.style.display = 'none';
     elements.statusSection.style.display = 'none';
 
+    // 显示占位符
+    elements.placeholderSection.style.display = 'flex';
+
     // 清空输入
     elements.theme.value = '';
     elements.title.value = '';
+    elements.themeSelect.value = '';
 
     // 启用按钮
     elements.generateBtn.disabled = false;
 
-    // 聚焦到主题输入框
-    elements.theme.focus();
+    // 滚动到顶部
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/**
+ * 查看我的作品（页面内 modal，避免弹窗被拦截）
+ */
+function handleMyWorks() {
+    const history = getTaskHistory();
+
+    if (history.length === 0) {
+        alert('😊 还没有作品哦，快去创作一个吧！');
+        return;
+    }
+
+    // 移除已有 modal
+    const existing = document.getElementById('worksModal');
+    if (existing) existing.remove();
+
+    // 构建作品列表
+    let itemsHtml = '';
+    history.forEach((item, index) => {
+        const time = new Date(item.timestamp).toLocaleString('zh-CN');
+        itemsHtml += `
+            <div style="margin-bottom:20px;padding:15px;background:#FFF9E6;border-radius:10px;border:2px solid #FFD93D;">
+                <p style="font-weight:bold;color:#FF6B9D;margin-bottom:10px;">
+                    ${index + 1}. ${item.title} - ${item.theme}
+                </p>
+                <p style="font-size:0.9em;color:#666;margin-bottom:10px;">
+                    创作时间: ${time}
+                </p>
+                <img src="${item.imageUrl}" style="max-width:100%;border-radius:8px;border:2px solid #FFD93D;">
+            </div>
+        `;
+    });
+
+    // 创建 modal
+    const modal = document.createElement('div');
+    modal.id = 'worksModal';
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;';
+    modal.innerHTML = `
+        <div style="background:white;border-radius:20px;max-width:600px;width:90%;max-height:80vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <div style="padding:20px;background:linear-gradient(135deg,#FF6B9D,#FEC163);display:flex;justify-content:space-between;align-items:center;">
+                <h3 style="color:white;margin:0;">🎨 我的作品集</h3>
+                <button id="closeWorksModal" style="background:white;border:none;border-radius:50%;width:36px;height:36px;font-size:1.2em;cursor:pointer;">✕</button>
+            </div>
+            <div style="padding:20px;overflow-y:auto;flex:1;">
+                ${itemsHtml}
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // 点击关闭
+    document.getElementById('closeWorksModal').addEventListener('click', () => modal.remove());
+    // 点击背景关闭
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+    });
+}
+
+/**
+ * 清除缓存
+ */
+function handleClearCache() {
+    if (confirm('🤔 确定要清除所有数据吗？\n这会删除保存的密钥和作品历史哦！')) {
+        // 停止正在进行的轮询
+        if (pollingInterval) {
+            clearInterval(pollingInterval);
+            pollingInterval = null;
+        }
+        clearStorage();
+        elements.apiKey.value = '';
+        alert('✅ 清除成功！');
+    }
 }
 
 // 页面加载完成后初始化

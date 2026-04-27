@@ -34,7 +34,7 @@ function getApiKey() {
 }
 
 /**
- * 保存任务到历史记录
+ * 保存任务到历史记录（只存元数据，不存图片数据）
  * @param {object} task - 任务对象
  */
 function saveTaskHistory(task) {
@@ -44,8 +44,17 @@ function saveTaskHistory(task) {
         // 添加时间戳
         task.timestamp = new Date().toISOString();
 
+        // 只保存轻量元数据，不存 data URL（避免 localStorage 溢出）
+        const record = {
+            theme: task.theme,
+            title: task.title,
+            imageUrl: task.imageUrl,
+            taskId: task.taskId,
+            timestamp: task.timestamp
+        };
+
         // 添加到历史记录开头
-        history.unshift(task);
+        history.unshift(record);
 
         // 只保留最近 10 条
         if (history.length > 10) {

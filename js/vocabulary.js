@@ -1,6 +1,7 @@
 // 词汇库 - 预设常见主题的词汇数据
 const vocabularyDatabase = {
     "超市": {
+        icon: "🛒",
         title: "《走进超市》",
         core: ["shōu yín yuán 收银员", "huò jià 货架", "gòu wù chē 购物车"],
         items: [
@@ -12,6 +13,7 @@ const vocabularyDatabase = {
     },
 
     "医院": {
+        icon: "🏥",
         title: "《快乐医院》",
         core: ["yī shēng 医生", "hù shi 护士", "bìng chuáng 病床"],
         items: [
@@ -23,6 +25,7 @@ const vocabularyDatabase = {
     },
 
     "公园": {
+        icon: "🌳",
         title: "《美丽的公园》",
         core: ["huá tī 滑梯", "qiū qiān 秋千", "shā chí 沙池"],
         items: [
@@ -34,6 +37,7 @@ const vocabularyDatabase = {
     },
 
     "学校": {
+        icon: "🏫",
         title: "《我爱上学》",
         core: ["lǎo shī 老师", "xué sheng 学生", "hēi bǎn 黑板"],
         items: [
@@ -45,6 +49,7 @@ const vocabularyDatabase = {
     },
 
     "餐厅": {
+        icon: "🍽️",
         title: "《美味餐厅》",
         core: ["chú shī 厨师", "fú wù yuán 服务员", "cān zhuō 餐桌"],
         items: [
@@ -56,6 +61,7 @@ const vocabularyDatabase = {
     },
 
     "动物园": {
+        icon: "🦁",
         title: "《动物园之旅》",
         core: ["sì yǎng yuán 饲养员", "dà xiàng 大象", "shī zi 狮子"],
         items: [
@@ -67,6 +73,7 @@ const vocabularyDatabase = {
     },
 
     "图书馆": {
+        icon: "📚",
         title: "《书的海洋》",
         core: ["guǎn lǐ yuán 管理员", "shū jià 书架", "yuè dú qū 阅读区"],
         items: [
@@ -78,6 +85,7 @@ const vocabularyDatabase = {
     },
 
     "游乐场": {
+        icon: "🎡",
         title: "《欢乐游乐场》",
         core: ["mó tiān lún 摩天轮", "guò shān chē 过山车", "xuán zhuǎn mù mǎ 旋转木马"],
         items: [
@@ -89,6 +97,7 @@ const vocabularyDatabase = {
     },
 
     "海滩": {
+        icon: "🏖️",
         title: "《快乐海滩》",
         core: ["hǎi làng 海浪", "shā tān 沙滩", "tài yáng sǎn 太阳伞"],
         items: [
@@ -100,6 +109,7 @@ const vocabularyDatabase = {
     },
 
     "农场": {
+        icon: "🚜",
         title: "《快乐农场》",
         core: ["nóng mín 农民", "niú 牛", "jī 鸡"],
         items: [
@@ -111,6 +121,7 @@ const vocabularyDatabase = {
     },
 
     "厨房": {
+        icon: "🍳",
         title: "《妈妈的厨房》",
         core: ["mā ma 妈妈", "lú zào 炉灶", "bīng xiāng 冰箱"],
         items: [
@@ -122,6 +133,7 @@ const vocabularyDatabase = {
     },
 
     "交通": {
+        icon: "🚗",
         title: "《交通工具》",
         core: ["qì chē 汽车", "gōng jiāo chē 公交车", "zì xíng chē 自行车"],
         items: [
@@ -133,6 +145,7 @@ const vocabularyDatabase = {
     },
 
     "水果店": {
+        icon: "🍎",
         title: "《水果乐园》",
         core: ["lǎo bǎn 老板", "huò jià 货架", "chēng 秤"],
         items: [
@@ -144,6 +157,7 @@ const vocabularyDatabase = {
     },
 
     "幼儿园": {
+        icon: "🧸",
         title: "《快乐幼儿园》",
         core: ["lǎo shī 老师", "xiǎo péng you 小朋友", "wán jù 玩具"],
         items: [
@@ -155,6 +169,7 @@ const vocabularyDatabase = {
     },
 
     "卧室": {
+        icon: "🛏️",
         title: "《我的卧室》",
         core: ["chuáng 床", "yī guì 衣柜", "shū zhuō 书桌"],
         items: [
@@ -166,6 +181,7 @@ const vocabularyDatabase = {
     },
 
     "花园": {
+        icon: "🌺",
         title: "《美丽花园》",
         core: ["yuán dīng 园丁", "huā duǒ 花朵", "cǎo píng 草坪"],
         items: [
@@ -177,51 +193,67 @@ const vocabularyDatabase = {
     },
 
     "邮局": {
+        icon: "📮",
         title: "《邮局一日》",
         core: ["yóu dì yuán 邮递员", "xìn jiàn 信件", "bāo guǒ 包裹"],
         items: [
             "yóu piào 邮票", "xìn fēng 信封", "míng xìn piàn 明信片",
-            "kuài dì 快递", "yóu tǒng 邮筒", "chēng 秤",
-            "bǐ 笔", "zhǐ 纸"
+            "bāo guǒ dān 包裹单", "chēng 秤", "yóu tǒng 邮筒",
+            "bǐ 笔", "jiāo shuǐ 胶水"
         ],
         environment: ["guì tái 柜台", "yǐ zi 椅子", "chuāng hu 窗户", "mén 门", "qiáng 墙"]
     },
 
-    "消防站": {
-        title: "《勇敢的消防员》",
-        core: ["xiāo fáng yuán 消防员", "xiāo fáng chē 消防车", "shuǐ dài 水带"],
-        items: [
-            "tóu kuī 头盔", "fú zhuāng 服装", "shǒu tào 手套",
-            "xuē zi 靴子", "fǔ tou 斧头", "tī zi 梯子",
-            "miè huǒ qì 灭火器", "jǐng líng 警铃"
-        ],
-        environment: ["chē kù 车库", "mén 门", "chuāng hu 窗户", "qiáng 墙", "dì bǎn 地板"]
-    },
-
-    "警察局": {
-        title: "《警察叔叔》",
-        core: ["jǐng chá 警察", "jǐng chē 警车", "jǐng zhāng 警章"],
-        items: [
-            "jǐng fú 警服", "jǐng mào 警帽", "duì jiǎng jī 对讲机",
-            "shǒu kào 手铐", "jǐng gùn 警棍", "hào zi 哨子",
-            "diàn nǎo 电脑", "wén jiàn 文件"
-        ],
-        environment: ["bàn gōng shì 办公室", "zhuō zi 桌子", "yǐ zi 椅子", "mén 门", "chuāng hu 窗户"]
-    },
-
     "理发店": {
+        icon: "💇",
         title: "《理发店》",
-        core: ["lǐ fà shī 理发师", "yǐ zi 椅子", "jīng zi 镜子"],
+        core: ["lǐ fà shī 理发师", "yǐ zi 椅子", "jìng zi 镜子"],
         items: [
             "jiǎn dāo 剪刀", "shū zi 梳子", "chuī fēng jī 吹风机",
-            "xǐ fà shuǐ 洗发水", "máo jīn 毛巾", "wéi bù 围布",
+            "xǐ fà shuǐ 洗发水", "máo jīn 毛巾", "wéi jīn 围巾",
             "pēn wù qì 喷雾器", "fā jiā 发夹"
         ],
-        environment: ["guì zi 柜子", "dēng 灯", "mén 门", "chuāng hu 窗户", "qiáng 墙"]
+        environment: ["guì zi 柜子", "dēng 灯", "chuāng hu 窗户", "mén 门", "dì bǎn 地板"]
+    },
+
+    "客厅": {
+        icon: "🛋️",
+        title: "《温馨客厅》",
+        core: ["shā fā 沙发", "diàn shì 电视", "chá jī 茶几"],
+        items: [
+            "yáo kòng qì 遥控器", "kào diàn 靠垫", "tái dēng 台灯",
+            "huā píng 花瓶", "shū 书", "bēi zi 杯子",
+            "dì tǎn 地毯", "guà zhōng 挂钟"
+        ],
+        environment: ["chuāng hu 窗户", "mén 门", "qiáng 墙", "dì bǎn 地板", "tiān huā bǎn 天花板"]
+    },
+
+    "四季": {
+        icon: "🍂",
+        title: "《四季变化》",
+        core: ["chūn tiān 春天", "xià tiān 夏天", "qiū tiān 秋天", "dōng tiān 冬天"],
+        items: [
+            "huā 花", "shù yè 树叶", "xuě 雪", "tài yáng 太阳",
+            "yǔ 雨", "fēng 风", "yún 云", "cǎi hóng 彩虹"
+        ],
+        environment: ["tiān kōng 天空", "shù 树", "cǎo 草", "shān 山", "hé liú 河流"]
+    },
+
+    "节日": {
+        icon: "🎊",
+        title: "《欢乐节日》",
+        core: ["chūn jié 春节", "zhōng qiū jié 中秋节", "duān wǔ jié 端午节"],
+        items: [
+            "dēng lóng 灯笼", "hóng bāo 红包", "yuè bǐng 月饼",
+            "zòng zi 粽子", "yān huā 烟花", "lǐ wù 礼物",
+            "dàn gāo 蛋糕", "qì qiú 气球"
+        ],
+        environment: ["jiā 家", "jiē dào 街道", "guǎng chǎng 广场", "tiān kōng 天空", "zhuāng shì 装饰"]
     },
 
     "通用": {
-        title: "《认识世界》",
+        icon: "📝",
+        title: "《识字小报》",
         core: ["rén 人", "wù pǐn 物品", "dì fang 地方"],
         items: [
             "dōng xi 东西", "gōng jù 工具", "shè bèi 设备",
@@ -234,7 +266,7 @@ const vocabularyDatabase = {
 /**
  * 根据主题获取相关词汇
  * @param {string} theme - 主题名称
- * @returns {object} 词汇对象，包含 title, core, items, environment
+ * @returns {object} 词汇对象，包含 icon, title, core, items, environment
  */
 function getVocabulary(theme) {
     // 精确匹配
@@ -242,9 +274,9 @@ function getVocabulary(theme) {
         return vocabularyDatabase[theme];
     }
 
-    // 模糊匹配（包含关键词）
+    // 模糊匹配：主题包含词条（至少 2 个字），避免单字误匹配
     for (let key in vocabularyDatabase) {
-        if (theme.includes(key) || key.includes(theme)) {
+        if (key !== "通用" && theme.includes(key) && key.length >= 2) {
             return vocabularyDatabase[key];
         }
     }
